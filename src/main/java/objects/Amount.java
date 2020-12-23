@@ -17,7 +17,7 @@ public class Amount {
 		this.amount = Objects.requireNonNull(amount);
 	}
 
-	public Integer getIngredient() {
+	public Integer getIngredientId() {
 		return ingredientId;
 	}
 

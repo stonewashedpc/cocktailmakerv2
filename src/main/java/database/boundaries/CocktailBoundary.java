@@ -88,4 +88,34 @@ public class CocktailBoundary {
 			stmt.setShort(4, amount);
 		}).execute();
 	}
+	
+	public static void insertCocktailImage(Integer cocktailId, FileInputStream fileInputStream) throws SQLException {
+		new DMLStatement("INSERT INTO cocktail_images VALUES (?, ?) ON DUPLICATE KEY UPDATE display_image = ?", (stmt) -> {
+			stmt.setInt(1, cocktailId);
+			stmt.setBinaryStream(2, fileInputStream);
+			stmt.setBinaryStream(3, fileInputStream);
+		}).execute();
+	}
+	
+	public static void insertPreparationStep(Integer cocktailId, Short stepNr, String title, String description) throws SQLException {
+		new DMLStatement("INSERT INTO preparation_steps VALUES (default, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE title = ?, description = ?", (stmt) -> {
+			stmt.setInt(1, cocktailId);
+			stmt.setShort(2, stepNr);
+			stmt.setString(3, title);
+			stmt.setString(4, description);
+			stmt.setString(5, title);
+			stmt.setString(6, description);
+		}).execute();
+	}
+	
+	public static void insertFollowupStep(Integer cocktailId, Short stepNr, String title, String description) throws SQLException {
+		new DMLStatement("INSERT INTO followup_steps VALUES (default, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE title = ?, description = ?", (stmt) -> {
+			stmt.setInt(1, cocktailId);
+			stmt.setShort(2, stepNr);
+			stmt.setString(3, title);
+			stmt.setString(4, description);
+			stmt.setString(5, title);
+			stmt.setString(6, description);
+		}).execute();
+	}
 }
