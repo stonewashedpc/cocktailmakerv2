@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Optional;
 
 /**
  * H2Database connection singleton.
@@ -34,10 +35,10 @@ public class H2Database implements Database {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public static H2Database getInstance() throws ClassNotFoundException, SQLException {
+	public static H2Database getInstance() throws SQLException {
 		if (instance == null) {
 			instance = new H2Database();
-			Class.forName(DB_DRIVER);
+			try { Class.forName(DB_DRIVER); } catch(ClassNotFoundException e) { e.printStackTrace(); }
 			connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 		}
 		return instance;
@@ -50,8 +51,9 @@ public class H2Database implements Database {
 	 * @throws SQLException
 	 */
 	@Override
-	public ResultSet executeQuery(String sql) throws SQLException {
+	public ResultSet executeQuery(String sql, Optional<InputMapper> inputMapper) throws SQLException {
 		PreparedStatement stmt = connection.prepareStatement(sql);
+		if(inputMapper.isPresent()) inputMapper.get().mapInput(stmt);
 		ResultSet result = stmt.executeQuery();
 		return result;
 	}
@@ -64,8 +66,9 @@ public class H2Database implements Database {
 	 * @throws SQLException
 	 */
 	@Override
-	public ResultSet executeUpdate(String sql) throws SQLException {
+	public ResultSet executeUpdate(String sql, Optional<InputMapper> inputMapper) throws SQLException {
 		PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+		if(inputMapper.isPresent()) inputMapper.get().mapInput(stmt);
 		stmt.executeUpdate();
 		return stmt.getGeneratedKeys();
 	}
