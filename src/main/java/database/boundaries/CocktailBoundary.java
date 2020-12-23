@@ -74,10 +74,9 @@ public class CocktailBoundary {
 	 * Data Manipulation Language (DML) Statements
 	 */
 	
-	public static Integer insert(String name, FileInputStream imageStream) throws SQLException {
-		return new DMLStatement("INSERT INTO cocktails VALUES (default, ?, ?)", (stmt) -> {
+	public static Integer insertCocktail(String name) throws SQLException {
+		return new DMLStatement("INSERT INTO cocktails VALUES (default, ?)", (stmt) -> {
 			stmt.setString(1, name);
-			stmt.setBinaryStream(2, imageStream);
 		}).execute().get(0);
 	}
 	
