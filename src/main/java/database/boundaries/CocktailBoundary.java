@@ -9,6 +9,7 @@ import database.DQLStatement;
 import objects.Amount;
 import objects.Cocktail;
 import objects.CocktailImage;
+import objects.Step;
 
 /**
  * Boundary class which provides several methods for retrieving database objects
@@ -55,6 +56,18 @@ public class CocktailBoundary {
 		return new DQLStatement<CocktailImage>("SELECT * FROM cocktail_images WHERE cocktail_id = ?", (stmt) -> {
 			stmt.setInt(1, id);
 		}, RowMap.COCKTAIL_IMAGE_MAPPER).execute().get(0);
+	}
+	
+	public static List<Step> findPreparationStepsById(Integer id) throws SQLException {
+		return new DQLStatement<Step>("SELECT * FROM preparation_steps WHERE cocktail_id = ? ORDER BY step_nr ASC", (stmt) -> {
+			stmt.setInt(1, id);
+		}, RowMap.COCKTAIL_STEP_MAPPER).execute();
+	}
+	
+	public static List<Step> findFollowupStepsById(Integer id) throws SQLException {
+		return new DQLStatement<Step>("SELECT * FROM followup_steps WHERE cocktail_id = ? ORDER BY step_nr ASC", (stmt) -> {
+			stmt.setInt(1, id);
+		}, RowMap.COCKTAIL_STEP_MAPPER).execute();
 	}
 	
 	/*

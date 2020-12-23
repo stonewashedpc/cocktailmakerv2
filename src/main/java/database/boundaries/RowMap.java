@@ -11,6 +11,7 @@ import objects.Cocktail;
 import objects.CocktailImage;
 import objects.Ingredient;
 import objects.Pump;
+import objects.Step;
 
 /**
  * Provides several RowMapper constants for mapping database ResultSets to objects
@@ -73,6 +74,18 @@ public class RowMap {
 			byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
 			imageBlob.free();
 			return new CocktailImage(id, imageBytes);
+		}
+	};
+	
+	public static final RowMapper<Step> COCKTAIL_STEP_MAPPER = new RowMapper<Step>() {
+
+		@Override
+		public Step mapRows(ResultSet rs) throws SQLException {
+			Integer cocktailId = rs.getInt("cocktail_id");
+			Short stepNr = rs.getShort("step_nr");
+			String title = rs.getString("title");
+			String description = rs.getString("description");
+			return new Step(cocktailId, stepNr, title, description);
 		}
 	};
 
