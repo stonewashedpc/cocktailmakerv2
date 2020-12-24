@@ -89,11 +89,29 @@ public class CocktailBoundary {
 		}).execute();
 	}
 	
+	public static void insertIngredientAmounts(Integer cocktailId, List<Amount> amounts) throws SQLException {
+		for (Amount amount : amounts) {
+			insertIngredientAmount(cocktailId, amount.getIngredientId(), amount.getAmount());
+		}
+	}
+	
+	public static void deleteIngredientAmounts(Integer cocktailId) throws SQLException {
+		new DMLStatement("DELETE FROM cocktail_ingredient_relation WHERE cocktail_id = ?", (stmt) -> {
+			stmt.setInt(1, cocktailId);
+		}).execute();
+	}
+	
 	public static void insertCocktailImage(Integer cocktailId, FileInputStream fileInputStream) throws SQLException {
 		new DMLStatement("INSERT INTO cocktail_images VALUES (?, ?) ON DUPLICATE KEY UPDATE display_image = ?", (stmt) -> {
 			stmt.setInt(1, cocktailId);
 			stmt.setBinaryStream(2, fileInputStream);
 			stmt.setBinaryStream(3, fileInputStream);
+		}).execute();
+	}
+	
+	public static void deleteCocktailImage(Integer cocktailId) throws SQLException {
+		new DMLStatement("DELETE FROM cocktail_images WHERE cocktail_id = ?", (stmt) -> {
+			stmt.setInt(1, cocktailId);
 		}).execute();
 	}
 	
@@ -108,6 +126,18 @@ public class CocktailBoundary {
 		}).execute();
 	}
 	
+	public static void insertPreparationSteps(List<Step> steps) throws SQLException {
+		for (Step step : steps) {
+			insertPreparationStep(step.getCocktailId(), step.getStepNr(), step.getTitle(), step.getDescription());
+		}
+	}
+	
+	public static void deletePreparationSteps(Integer cocktailId) throws SQLException {
+		new DMLStatement("DELETE FROM preparation_steps WHERE cocktail_id = ?", (stmt) -> {
+			stmt.setInt(1, cocktailId);
+		}).execute();
+	}
+	
 	public static void insertFollowupStep(Integer cocktailId, Short stepNr, String title, String description) throws SQLException {
 		new DMLStatement("INSERT INTO followup_steps VALUES (default, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE title = ?, description = ?", (stmt) -> {
 			stmt.setInt(1, cocktailId);
@@ -116,6 +146,18 @@ public class CocktailBoundary {
 			stmt.setString(4, description);
 			stmt.setString(5, title);
 			stmt.setString(6, description);
+		}).execute();
+	}
+	
+	public static void insertFollowupSteps(List<Step> steps) throws SQLException {
+		for (Step step : steps) {
+			insertFollowupStep(step.getCocktailId(), step.getStepNr(), step.getTitle(), step.getDescription());
+		}
+	}
+	
+	public static void deleteFollowupSteps(Integer cocktailId) throws SQLException {
+		new DMLStatement("DELETE FROM followup_steps WHERE cocktail_id = ?", (stmt) -> {
+			stmt.setInt(1, cocktailId);
 		}).execute();
 	}
 }
