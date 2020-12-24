@@ -80,6 +80,12 @@ public class CocktailBoundary {
 		}).execute().get(0);
 	}
 	
+	public static Integer deleteCocktail(Integer cocktailId) throws SQLException {
+		return new DMLStatement("DELETE FROM cocktails WHERE cocktail_id = ?", (stmt) -> {
+			stmt.setInt(1, cocktailId);
+		}).execute().get(0);
+	}
+	
 	public static void insertIngredientAmount(Integer cocktailId, Integer ingredientId, Short amount) throws SQLException {
 		new DMLStatement("INSERT INTO cocktail_ingredient_relation VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE amount = ?", (stmt) -> {
 			stmt.setInt(1, cocktailId);
@@ -116,7 +122,7 @@ public class CocktailBoundary {
 	}
 	
 	public static void insertPreparationStep(Integer cocktailId, Short stepNr, String title, String description) throws SQLException {
-		new DMLStatement("INSERT INTO preparation_steps VALUES (default, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE title = ?, description = ?", (stmt) -> {
+		new DMLStatement("INSERT INTO preparation_steps VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE title = ?, description = ?", (stmt) -> {
 			stmt.setInt(1, cocktailId);
 			stmt.setShort(2, stepNr);
 			stmt.setString(3, title);
@@ -139,7 +145,7 @@ public class CocktailBoundary {
 	}
 	
 	public static void insertFollowupStep(Integer cocktailId, Short stepNr, String title, String description) throws SQLException {
-		new DMLStatement("INSERT INTO followup_steps VALUES (default, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE title = ?, description = ?", (stmt) -> {
+		new DMLStatement("INSERT INTO followup_steps VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE title = ?, description = ?", (stmt) -> {
 			stmt.setInt(1, cocktailId);
 			stmt.setShort(2, stepNr);
 			stmt.setString(3, title);
