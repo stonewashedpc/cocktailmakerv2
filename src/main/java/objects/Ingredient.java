@@ -24,11 +24,19 @@ public class Ingredient {
 		return id;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	public BigDecimal getAlcoholByVolume() {
 		return alcoholByVolume;
+	}
+	
+	public void setAlcoholByVolume(BigDecimal alcoholByVolume) {
+		this.alcoholByVolume = alcoholByVolume;
 	}
 }

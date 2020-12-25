@@ -24,8 +24,8 @@ public class IngredientBoundary {
 	}
 	
 	public static List<Ingredient> findByKeyword(String searchString) throws SQLException {
-		return new DQLStatement<Ingredient>("SELECT * FROM ingredients WHERE name LIKE '%?%'", (stmt) -> {
-			stmt.setString(1, searchString);
+		return new DQLStatement<Ingredient>("SELECT * FROM ingredients WHERE name REGEXP ?", (stmt) -> {
+			stmt.setString(1, ".*" + searchString + ".*");
 		}, RowMap.INGREDIENT_MAPPER).execute();
 	}
 	
@@ -40,16 +40,23 @@ public class IngredientBoundary {
 	 */
 	
 	public static Integer insertIngredient(String name, BigDecimal alcoholByVolume) throws SQLException {
-		return new DMLStatement("INSERT INTO cocktails VALUES (default, ?, ?) ON DUPLICATE KEY UPDATE alcohol_by_volume = ?", (stmt) -> {
+		return new DMLStatement("INSERT INTO ingredients VALUES (default, ?, ?)", (stmt) -> {
 			stmt.setString(1, name);
 			stmt.setBigDecimal(2, alcoholByVolume);
-			stmt.setBigDecimal(3, alcoholByVolume);
 		}).execute().get(0);
 	}
 	
-	public static Integer deleteIngredient(Integer ingredientId) throws SQLException {
-		return new DMLStatement("DELETE FROM ingredients WHERE id = ?", (stmt) -> {
+	public static void updateIngredient(Integer id, String name, BigDecimal alcoholByVolume) throws SQLException {
+		new DMLStatement("UPDATE ingredients SET name = ?, alcohol_by_volume = ? WHERE id = ?", (stmt) -> {
+			stmt.setString(1, name);
+			stmt.setBigDecimal(2, alcoholByVolume);
+			stmt.setInt(3, id);
+		}).execute();
+	}
+	
+	public static void deleteIngredient(Integer ingredientId) throws SQLException {
+		new DMLStatement("DELETE FROM ingredients WHERE id = ?", (stmt) -> {
 			stmt.setInt(1, ingredientId);
-		}).execute().get(0);
+		}).execute();
 	}
 }

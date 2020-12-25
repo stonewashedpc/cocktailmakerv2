@@ -27,8 +27,8 @@ public class CocktailBoundary {
 	}
 	
 	public static List<Cocktail> findByKeyword(String searchString) throws SQLException {
-		return new DQLStatement<Cocktail>("SELECT * FROM cocktails WHERE name LIKE '%?%'", (stmt) -> {
-			stmt.setString(1, searchString);
+		return new DQLStatement<Cocktail>("SELECT * FROM cocktails WHERE name REGEXP ?", (stmt) -> {
+			stmt.setString(1, ".*" + searchString + ".*");
 		}, RowMap.COCKTAIL_MAPPER).execute();
 	}
 	
@@ -80,10 +80,10 @@ public class CocktailBoundary {
 		}).execute().get(0);
 	}
 	
-	public static Integer deleteCocktail(Integer cocktailId) throws SQLException {
-		return new DMLStatement("DELETE FROM cocktails WHERE cocktail_id = ?", (stmt) -> {
+	public static void deleteCocktail(Integer cocktailId) throws SQLException {
+		new DMLStatement("DELETE FROM cocktails WHERE cocktail_id = ?", (stmt) -> {
 			stmt.setInt(1, cocktailId);
-		}).execute().get(0);
+		}).execute();
 	}
 	
 	public static void insertIngredientAmount(Integer cocktailId, Integer ingredientId, Short amount) throws SQLException {

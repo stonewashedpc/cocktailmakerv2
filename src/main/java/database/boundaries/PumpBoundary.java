@@ -54,13 +54,13 @@ public class PumpBoundary {
 		}
 	}
 	
-	public static Integer deletePump(Byte gpioPin) throws SQLException {
-		return new DMLStatement("DELETE FROM pumps WHERE gpio_pin = ?", (stmt) -> {
+	public static void deletePump(Byte gpioPin) throws SQLException {
+		new DMLStatement("DELETE FROM pumps WHERE gpio_pin = ?", (stmt) -> {
 			stmt.setByte(1, gpioPin);
-		}).execute().get(0);
+		}).execute();
 	}
 	
-	public static List<Integer> deletePumps() throws SQLException {
-		return new DMLStatement("DELETE FROM pumps", null).execute();
+	public static void deletePumps() throws SQLException {
+		new DMLStatement("DELETE FROM pumps", null).execute();
 	}
 }

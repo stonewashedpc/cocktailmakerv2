@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>CocktailMakerV2</title>
+	<h:outputStylesheet name="primeicons/primeicons.css"
+		library="primefaces" />
+</h:head>
+
+<h:body>
+	<p:menubar>
+		<p:menuitem value="Cocktails" url="settings-cocktails.xhtml" icon="pi pi-pencil"
+			style="margin-right:20px">
+		</p:menuitem>
+		<p:menuitem value="Zutaten" url="settings-ingredients.xhtml" icon="pi pi-pencil"
+			style="margin-right:20px">
+		</p:menuitem>
+		<p:menuitem value="Pumpenkonfiguration" url="settings-pumpconfig.xhtml"
+			icon="pi pi-sliders-v">
+		</p:menuitem>
+		<f:facet name="options">
+			<p:linkButton value="Benutzersicht" outcome="index.xhtml"
+				icon="pi pi-users" />
+		</f:facet>
+	</p:menubar>
+</h:body>
+</html>
