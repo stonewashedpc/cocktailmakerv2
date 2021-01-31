@@ -19,7 +19,7 @@ import objects.Ingredient;
 
 @Named
 @ViewScoped
-public class SettingsController implements Serializable {
+public class IngredientSettingsController implements Serializable {
 
 	/**
 	 * 
@@ -29,7 +29,7 @@ public class SettingsController implements Serializable {
 	private String ingredientName;
 
 	private BigDecimal alcoholByVolume;
-
+	
 	private List<Ingredient> ingredients;
 
 	@PostConstruct

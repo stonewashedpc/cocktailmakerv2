@@ -38,31 +38,31 @@
 				<p:outputLabel for="ingredientName" styleClass="p-col-fixed"
 					style="width:100px" value="Name:" />
 				<p:inputText id="ingredientName"
-					value="#{settingsController.ingredientName}" required="true" />
+					value="#{ingredientSettingsController.ingredientName}" required="true" />
 				<p:outputLabel for="alcoholByVolume" styleClass="p-col-fixed"
 					style="width:100px" value="Alkoholgehalt:" />
 				<p:spinner id="alcoholByVolume"
-					value="#{settingsController.alcoholByVolume}" suffix="%" min="0"
+					value="#{ingredientSettingsController.alcoholByVolume}" suffix="%" min="0"
 					max="100" decimalPlaces="1" stepFactor="0.1" required="true" />
 				<p:commandButton value="Hinzufügen"
-					action="#{settingsController.addIngredient()}"
+					action="#{ingredientSettingsController.addIngredient()}"
 					update="@form msg dataTableForm" />
 			</h:panelGrid>
 		</h:form>
 	</p:panel>
 	<h:form id="dataTableForm">
 		<p:dataTable id="ingredients" widgetVar="ingredients" var="ingredient"
-			value="#{settingsController.ingredients}" editable="true"
+			value="#{ingredientSettingsController.ingredients}" editable="true"
 			paginator="true" rows="25" lazy="true"
 			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			currentPageReportTemplate="{startRecord}-{endRecord} von {totalRecords} Einträgen"
 			rowsPerPageTemplate="10,15,25,50" style="margin-bottom:20px">
 			<f:facet name="header">Zutaten</f:facet>
 
-			<p:ajax event="rowEdit" listener="#{settingsController.onRowEdit}"
+			<p:ajax event="rowEdit" listener="#{ingredientSettingsController.onRowEdit}"
 				update="msg" />
 			<p:ajax event="rowEditCancel"
-				listener="#{settingsController.onRowCancel}" update="msg" />
+				listener="#{ingredientSettingsController.onRowCancel}" update="msg" />
 
 			<p:column headerText="ID">
 				<h:outputText value="#{ingredient.id}" />
@@ -95,7 +95,7 @@
 			</p:column>
 			<p:column style="width:32px">
 				<p:commandButton icon="pi pi-trash" style="width:100%"
-					action="#{settingsController.onRowDelete(ingredient)}" update="msg dataTableForm">
+					action="#{ingredientSettingsController.onRowDelete(ingredient)}" update="msg dataTableForm">
 					<p:confirm header="Bestätigung" message="Sind Sie sicher?"
 						icon="pi pi-exclamation-triangle" />
 				</p:commandButton>
