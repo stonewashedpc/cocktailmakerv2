@@ -12,20 +12,185 @@
 </h:head>
 
 <h:body>
-	<p:menubar>
-		<p:menuitem value="Cocktails" url="settings-cocktails.xhtml" icon="pi pi-pencil"
-			style="margin-right:20px">
+	<p:menubar style="margin-bottom:20px">
+		<p:menuitem value="Cocktails" url="settings-cocktails.xhtml"
+			icon="pi pi-pencil" style="margin-right:20px">
 		</p:menuitem>
-		<p:menuitem value="Zutaten" url="settings-ingredients.xhtml" icon="pi pi-pencil"
-			style="margin-right:20px">
+		<p:menuitem value="Zutaten" url="settings-ingredients.xhtml"
+			icon="pi pi-pencil" style="margin-right:20px">
 		</p:menuitem>
-		<p:menuitem value="Pumpenkonfiguration" url="settings-pumpconfig.xhtml"
-			icon="pi pi-sliders-v">
+		<p:menuitem value="Pumpenkonfiguration"
+			url="settings-pumpconfig.xhtml" icon="pi pi-sliders-v">
 		</p:menuitem>
 		<f:facet name="options">
 			<p:linkButton value="Benutzersicht" outcome="index.xhtml"
 				icon="pi pi-users" />
 		</f:facet>
 	</p:menubar>
+
+	<p:growl id="msg" showDetail="true" />
+
+	<p:panel id="addCocktailPanel" header="Cocktail hinzufügen"
+		toggleable="true" toggleableHeader="true" toggleSpeed="500"
+		widgetVar="panel" collapsed="true" style="margin-bottom:20px">
+		<h:form>
+			<h:panelGrid columns="2" cellpadding="5" styleClass="ui-grid">
+				<p:outputLabel for="cocktailName" styleClass="p-col-fixed"
+					style="width:100px" value="Name:" />
+				<p:inputText id="cocktailName"
+					value="#{cocktailSettingsController.newCocktailName}"
+					required="true" />
+				<p:commandButton value="Hinzufügen"
+					action="#{cocktailSettingsController.addCocktail()}"
+					update="@form dataTableForm cocktailEditorForm msg" />
+			</h:panelGrid>
+		</h:form>
+	</p:panel>
+
+	<h:form id="dataTableForm">
+		<p:dataTable id="cocktails" widgetVar="cocktails" var="cocktail"
+			value="#{cocktailSettingsController.cocktails}" paginator="true"
+			rows="25" lazy="true"
+			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			currentPageReportTemplate="{startRecord}-{endRecord} von {totalRecords} Einträgen"
+			rowsPerPageTemplate="10,15,25,50" style="margin-bottom:20px">
+			<f:facet name="header">Cocktails</f:facet>
+
+			<p:column headerText="ID">
+				<h:outputText value="#{cocktail.id}" />
+			</p:column>
+			<p:column headerText="Name">
+				<h:outputText value="#{cocktail.name}" />
+			</p:column>
+			<p:column style="width:32px">
+				<p:commandButton icon="ui-icon ui-icon-pencil" style="width:100%"
+					action="#{cocktailSettingsController.onRowEdit(cocktail)}"
+					update="msg dataTableForm cocktailEditorForm" />
+			</p:column>
+			<p:column style="width:32px">
+				<p:commandButton icon="pi pi-trash" style="width:100%"
+					action="#{cocktailSettingsController.onRowDelete(cocktail)}"
+					update="msg dataTableForm">
+					<p:confirm header="Bestätigung" message="Sind Sie sicher?"
+						icon="pi pi-exclamation-triangle" />
+				</p:commandButton>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Ja" type="button"
+						styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+					<p:commandButton value="Abbrechen" type="button"
+						styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+				</p:confirmDialog>
+			</p:column>
+		</p:dataTable>
+	</h:form>
+
+
+
+	<h:form id="cocktailEditorForm">
+		<p:dialog header="Cocktail bearbeiten" widgetVar="dlg3" minHeight="40"
+			fitViewport="true" showEffect="fade">
+
+
+			<h3 style="margin-top: 0">Basisdaten</h3>
+
+			<h:panelGrid columns="2" cellpadding="5" styleClass="ui-grid">
+				<p:outputLabel for="cocktailId" styleClass="p-col-fixed"
+					style="width:100px" value="ID:" />
+				<p:inputText id="cocktailId"
+					value="#{cocktailSettingsController.cocktailId}" readonly="true" />
+				<p:outputLabel for="cocktailName" styleClass="p-col-fixed"
+					style="width:100px" value="Name:" />
+				<p:inputText id="cocktailName"
+					value="#{cocktailSettingsController.cocktailName}" required="true" />
+			</h:panelGrid>
+
+			<h3 style="margin-top: 0">Zutaten</h3>
+
+			<h:panelGrid columns="2" cellpadding="5" styleClass="ui-grid">
+				<p:outputLabel for="selectIngredient" styleClass="p-col-fixed"
+					style="width:100px" value="Zutat:" />
+				<p:selectOneMenu id="selectIngredient"
+					value="#{cocktailSettingsController.ingredient}" dynamic="true"
+					filter="true" filterMatchMode="contains"
+					converter="ingredientConverter">
+					<f:selectItems value="#{cocktailSettingsController.ingredients}"
+						var="ingredient" itemValue="#{ingredient}"
+						itemLabel="#{ingredient.name}" />
+				</p:selectOneMenu>
+				<p:outputLabel for="amount" styleClass="p-col-fixed"
+					style="width:100px" value="Menge:" />
+				<p:spinner id="amount" value="#{cocktailSettingsController.amount}"
+					suffix="ml" min="0" max="500" decimalPlaces="0" stepFactor="5" />
+			</h:panelGrid>
+			<p:commandButton value="Hinzufügen"
+				action="#{cocktailSettingsController.addIngredientAmount()}"
+				style="width:auto; margin-bottom: 1em"
+				update="ingredientAmounts msg" />
+
+
+			<p:dataTable id="ingredientAmounts" widgetVar="ingredientAmounts"
+				var="ingredientAmount"
+				value="#{cocktailSettingsController.ingredientAmounts}"
+				editable="true" lazy="true" style="margin-bottom:20px">
+				<f:facet name="header">Zutaten</f:facet>
+
+				<p:ajax event="rowEdit"
+					listener="#{cocktailSettingsController.onAmountRowEdit}"
+					update="msg" />
+				<p:ajax event="rowEditCancel"
+					listener="#{cocktailSettingsController.onAmountRowCancel}"
+					update="msg" />
+
+				<p:column headerText="ID">
+					<h:outputText value="#{ingredientAmount.ingredient.id}" />
+				</p:column>
+				<p:column headerText="Name">
+					<h:outputText value="#{ingredientAmount.ingredient.name}" />
+				</p:column>
+				<p:column headerText="Alkoholgehalt">
+					<h:outputText value="#{ingredientAmount.ingredient.alcoholByVolume}%" />
+				</p:column>
+				<p:column headerText="Menge">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{ingredientAmount.amount} ml" />
+						</f:facet>
+						<f:facet name="input">
+							<p:spinner value="#{ingredientAmount.amount}" suffix=" ml"
+								min="0" max="500" decimalPlaces="0" stepFactor="5"
+								required="true" label="Menge" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column style="width:32px">
+					<p:rowEditor />
+				</p:column>
+				<p:column style="width:32px">
+					<p:commandButton
+						action="#{cocktailSettingsController.onAmountRowDelete(ingredientAmount)}"
+						icon="pi pi-trash" style="width:100%"
+						update="ingredientAmounts msg">
+						<p:confirm header="Bestätigung" message="Sind Sie sicher?"
+							icon="pi pi-exclamation-triangle" />
+					</p:commandButton>
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<p:commandButton value="Ja" type="button"
+							styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+						<p:commandButton value="Abbrechen" type="button"
+							styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+					</p:confirmDialog>
+				</p:column>
+			</p:dataTable>
+			<f:facet name="footer">
+				<p:commandButton onClick="PF('dlg3').hide()" value="Abbrechen"
+					styleClass="ui-button-flat p-mr-2" style="width: auto"
+					update="cocktailEditorForm" />
+				<p:commandButton value="Speichern" style="width: auto"
+					action="#{cocktailSettingsController.onCocktailSave()}"
+					update="dataTableForm cocktailEditorForm msg" />
+			</f:facet>
+		</p:dialog>
+	</h:form>
+
 </h:body>
 </html>

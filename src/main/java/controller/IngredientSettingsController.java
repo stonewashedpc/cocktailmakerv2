@@ -46,9 +46,8 @@ public class IngredientSettingsController implements Serializable {
 		try {
 			this.ingredients = IngredientBoundary.findAll();
 		} catch (SQLException e) {
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage("growlEdit", new FacesMessage(FacesMessage.SEVERITY_ERROR, "DB-Zugriff fehlgeschlagen",
-					"Die Zutaten konnten nicht abgerufen werden!"));
+			showMessage(FacesMessage.SEVERITY_ERROR, "DB-Zugriff fehlgeschlagen",
+					"Die Zutaten konnten nicht abgerufen werden!");
 			e.printStackTrace();
 		}
 	}

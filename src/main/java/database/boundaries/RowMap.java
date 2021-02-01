@@ -60,8 +60,10 @@ public class RowMap {
 		@Override
 		public Amount mapRows(ResultSet rs) throws SQLException {
 			Integer id = rs.getInt("ingredient_id");
+			String name = rs.getString("name");
+			BigDecimal alcoholByVolume = rs.getBigDecimal("alcohol_by_volume");
 			Short amount = rs.getShort("amount");
-			return new Amount(id, amount);
+			return new Amount(new Ingredient(id, name, alcoholByVolume), amount);
 		}
 	};
 	

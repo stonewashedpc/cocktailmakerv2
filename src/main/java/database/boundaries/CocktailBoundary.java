@@ -47,7 +47,7 @@ public class CocktailBoundary {
 	}
 	
 	public static List<Amount> findRecipeById(Integer id) throws SQLException {
-		return new DQLStatement<Amount>("SELECT * FROM cocktail_ingredient_relation WHERE cocktail_id = ?", (stmt) -> {
+		return new DQLStatement<Amount>("SELECT * FROM cocktail_ingredient_relation JOIN ingredients ON (id = ingredient_id) WHERE cocktail_id = ?", (stmt) -> {
 			stmt.setInt(1, id);
 		}, RowMap.AMOUNT_MAPPER).execute();
 	}
@@ -80,24 +80,30 @@ public class CocktailBoundary {
 		}).execute().get(0);
 	}
 	
+	public static void updateCocktail(Integer id, String name) throws SQLException {
+		new DMLStatement("UPDATE cocktails SET name = ? WHERE id = ?", (stmt) -> {
+			stmt.setString(1, name);
+			stmt.setInt(2, id);
+		}).execute();
+	}
+	
 	public static void deleteCocktail(Integer cocktailId) throws SQLException {
-		new DMLStatement("DELETE FROM cocktails WHERE cocktail_id = ?", (stmt) -> {
+		new DMLStatement("DELETE FROM cocktails WHERE id = ?", (stmt) -> {
 			stmt.setInt(1, cocktailId);
 		}).execute();
 	}
 	
 	public static void insertIngredientAmount(Integer cocktailId, Integer ingredientId, Short amount) throws SQLException {
-		new DMLStatement("INSERT INTO cocktail_ingredient_relation VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE amount = ?", (stmt) -> {
+		new DMLStatement("INSERT INTO cocktail_ingredient_relation VALUES (?, ?, ?)", (stmt) -> {
 			stmt.setInt(1, cocktailId);
 			stmt.setInt(2, ingredientId);
 			stmt.setShort(3, amount);
-			stmt.setShort(4, amount);
 		}).execute();
 	}
 	
 	public static void insertIngredientAmounts(Integer cocktailId, List<Amount> amounts) throws SQLException {
 		for (Amount amount : amounts) {
-			insertIngredientAmount(cocktailId, amount.getIngredientId(), amount.getAmount());
+			insertIngredientAmount(cocktailId, amount.getIngredient().getId(), amount.getAmount());
 		}
 	}
 	

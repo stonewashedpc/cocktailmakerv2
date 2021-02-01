@@ -9,19 +9,23 @@ import java.util.Objects;
  */
 public class Amount {
 	
-	private Integer ingredientId;
+	private Ingredient ingredient;
 	private Short amount;
 	
-	public Amount(Integer ingredientId, Short amount) {
-		this.ingredientId = Objects.requireNonNull(ingredientId);
+	public Amount(Ingredient ingredient, Short amount) {
+		this.ingredient = Objects.requireNonNull(ingredient);
 		this.amount = Objects.requireNonNull(amount);
 	}
 
-	public Integer getIngredientId() {
-		return ingredientId;
+	public Ingredient getIngredient() {
+		return ingredient;
 	}
 
 	public Short getAmount() {
 		return amount;
+	}
+
+	public void setAmount(Short amount) {
+		this.amount = amount;
 	}
 }

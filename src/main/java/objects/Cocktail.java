@@ -31,6 +31,10 @@ public class Cocktail {
 		return name;
 	}
 	
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public List<Amount> findRecipe() throws SQLException {
 		return CocktailBoundary.findRecipeById(this.id);
 	}
